@@ -1,0 +1,29 @@
+sudo: required
+language: python
+services:
+- docker
+before_install:
+- echo "$TRAVIS_COMMIT"
+script:
+- docker build -t "$DOCKER_USER/hitman_agent" .
+- docker tag "$DOCKER_USER/hitman_agent:latest" "$DOCKER_USER/hitman_agent:$(echo
+  $TRAVIS_COMMIT| cut -c-10)"
+- docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
+- docker push "$DOCKER_USER/hitman_agent"
+# before_deploy:
+# - openssl aes-256-cbc -K $encrypted_9ad22a92b11d_key -iv $encrypted_9ad22a92b11d_iv -in deploy_key.enc -out /tmp/deploy_key -d
+# - eval "$(ssh-agent -s)"
+# - chmod 600 /tmp/deploy_key
+# - ssh-add /tmp/deploy_key
+# deploy:
+#   provider: script
+#   skip_cleanup: true
+#   script: ssh -o StrictHostKeyChecking=no memcock@memcock.tk "./deploy.sh deploy hitman
+#     $(echo $TRAVIS_COMMIT| cut -c-10)"
+#   on:
+#     branch: master
+env:
+  global:
+  - secure: 775ee1w6ybK9HyeMStmrvG0NSJOCTtCLu83usSEQ6vwZm96cbsE14Z1CyLtKn/E3MP7xm+S6GhUhHTMX/QNxCNS94ASlSXPFPA7GEo79lXVxUMVjPfF+wgJwGFTcbCywTZ5jyGF3xHhg5qsN2U3ld9ieBm3QqyPgkC7gyFn2hTn/0nqIjwRQ7LufUwWeA9B5ggxzJbJO0rq5i7NwcXKVhdl6caBmvROSDylH+hxKcgrokVkwPXv/kMn1CvNX73oN96qVfkAOO6MJheLoWJc2Sf7q3p9BfizKk3tDB3BmZwqHf36v7GBMQXaKI+GY9ElrQ+YYenLDBQtl4ai/3t8F18cGPXPNMqEARGuk3In+b+eFouMPg1+XJbtdU83DB07VxR1ASx2xF2/yCHSdHblfIW5OlCVXM2KAVODnsrCwC4etOs9Jh3u3h6cqSCzEdLgPObsJvucviit6HlBfKBqkqFP1Uw1F/el1YcJXMj6uZbNaZhMgaPoH2DHU03So5CAuJ7ifXqYO/dQC0WUaL32D5bcuY0bRV0vh69YgwQkt2hukQdzvlf4KIg/zjWO+r4RrIxomnojZ7nSkOSyXzP3bsrrwHq18bSczXIlZpemI8IGDvM3zX07tnY6a0k0E/hyzsbaIHJuS2fSM9rWwhYMVtpmKV/MTeZEPkOLBRoplXa4=
+  - secure: 2VRwWVHuYF5KZJAXkb1HQBDOm5RHKG8deVwlQXT3MJwm8W3LAMf9fXjVCmhRYpd8upQBY33aWExZ5cIhKr3fqBbykLEVOdEBvf+NR69+9u3Ac8BWzhxoDEJo2BMEbTe3ZWf1a+si5fumTR1T6LjKCXuQxYacRFXbcMX++CGyO0m67TloB/mjvpl4NbY/WnlfHoAGg2T0NAXy2/zjqSFNtcNIh9RXGF7qibJfuFXJpUUWyp6qZCOmJBfdepg/ZpFWjuiCSDi0pMfISzG5zXBdonpI3BwK1LsY7UW5cSAXYATXu4ijXGSgFt+dnssfIW0GvI5+qiL1zQ1auj3m+0awz9zr0EHZrrHWNFr2DSqRwkfraAHcZjv4eGBoE+2dFHAbAss47hLma5agHaSs7sAKPSGSpCzbQ+pPAhnJH8Mz857ab9jzN+wODnACZS8jSojS3XN6BctA2FnYD+NE1OkPzY0g1llWsZs7Mk25r6csZ0LRsB/etqo9sr7fkUZfc/5Sm2Lh/x6zEEJaaHpZjOEt4gQarFFk+teV173oDIZOO+GART/qtGTFaTeNXY/Byf4voNqWlMZodwHiIpaKM2N7lHschlv5slvRPoJoXl7nHJ+juvRWYgX0D/k/5VsUqzqEhcm5R7qh9EWZXdCQ6nQGr57WgyvfwRVa4XuPKWWjWuE=
+  - secure: TsmVw7COzmODvkLRWzNUw8oMfJussYXQT98eV0aHh9vJ+6jU6UM9Vk/WQOWxHLoWAcdD7AI6fKzBHCDKt+wbdoftSVbThjby3K3DHqKFtrRL5Nl5SxDdNkORcs5QvuX9Frj5cSwa/D4qIj2h0qRZZA2RSYlbdIwCASytn0nRpOs3I6ribDqHigVzDKEP8SN4OMPtZjU3Cbm1Nuvf39sukP9eowC4TepVQTjBSJ+VI7JI7URI/sGGZ31ucubEVAiYPeaCroMy8ZykvJwxopN4t0j+rhwMw2OB7iGoKKN1Ih7a20+czgxxmDrO+NDmW55bRAsBjy4M3+c314qCwOM1LZDeOfmzu7AK0zHZ5BkmJy87N+EHAs+BS5s2iuOzMUNfCtJ/6FmDtFdN5Qnhnaj/rMgX4zA3ptKdqjC5oTQRD4Bbnz0yn7dIDs7yJm8HQnPqxolURVmSH4dwtcqqlAg8NwdnHLmEo1XqQ3puVdmtT9MxUgIs74jnF8OZpoQMReii26JvDirX940wSaJcEjK4Wvn68K0tFEaCytiaB0CFaA1FY6mCtR9YDfmoygaWAVdmHATZe36d1Srcakrwdwu4dw0ZqmZlYRQCqtuF76WLeFpFHYRs6T5+aHuZB1KfdXIWtcqG6LT8YgmkaoLII8KwQl5ngUbv5ENzxHhwhmWoh34=
