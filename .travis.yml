@@ -3,6 +3,8 @@ language: python
 services:
 - docker
 before_install:
+- openssl aes-256-cbc -K $encrypted_7e1d88ef6dce_key -iv $encrypted_7e1d88ef6dce_iv
+  -in deploy_key.enc -out ./deploy_key -d
 - echo "$TRAVIS_COMMIT"
 script:
 - docker build -t "$DOCKER_USER/hitman_agent" .
@@ -10,6 +12,19 @@ script:
   $TRAVIS_COMMIT| cut -c-10)"
 - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
 - docker push "$DOCKER_USER/hitman_agent"
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_9ad22a92b11d_key -iv $encrypted_9ad22a92b11d_iv
+  -in deploy_key.enc -out /tmp/deploy_key -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/deploy_key
+- ssh-add /tmp/deploy_key
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: ssh -o StrictHostKeyChecking=no ubuntu@hitman.tmacs.space "./deploy.sh deploy
+    agent $(echo $TRAVIS_COMMIT| cut -c-10)"
+  on:
+    branch: master
 env:
   global:
   - secure: z6uB6a4oKPRnDivAHr/UTMmWqhBMfvTeM7d/vbggrD3PgvgYsAO0dApEpEp7OGdKodm0zVFcfRHvEef8KzLSeOUMgpEekwQJlpAwuCVdF6qeasU9j+9zUST/xFVGrQ6W1gYOkRPx6L9JZz00p/FLsFHHAzicuGuSR7MRHDKlMI4jWY76qombr8LV22fO7SWGZ4Xm+Hr1DBDZJV+q0Od7sB7MFpkRcP+7ysfr6XjNz+ObMdW0+kUhTaorAmCfw/uAmCTPeuaadw8XVV0mGMGrABj/Lh/namLrj6EdqVF4sW9H8Cf9o31BEd+ojPxoKvJC7uJ8S3P66j2kiR7ewJWxY0OO5iblrYENcqS90maAeifJInCnJ8doiwIMbgaLg9eOEA2eEs97vBwuKrZXTI1LY51h0doaRmw2odvzhKEr2sQAlMReZtKr2nwWZrI956zHA9NxAI7Ihy2sRRMBVXV1AkqDdtCRbSopOf3CtCIph6Yym4aIWM7e9/9Jroq/JrkRXrFiDQv55+PvzUJc+3F3N14XHc1POD7NdlPwwgzr24FjBQ5WD+0TXRtZvWk8fCT1kweKiXC+2ElMgrarIoxE0FY9Z1zqgzaXLDMQ/rvu2uCWvRYdaGYDVX3icACRi3wQb0PeKSbbn8/qcngBRddCvqJ4D+WdqaRHtMNz41w9pK8=
