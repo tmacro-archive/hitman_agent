@@ -147,7 +147,7 @@ class AssignNextRoundAction(Action):
 				assigned[player] = h
 				hits.remove(h)			# Remove the chosen hit
 				players.remove(player)	# and player from their respective lists
-				if len(players) > 0:	# If there are any remaining hits/players
+				if len(players) > 0:	#space%2Fauth%2Fauthorized If there are any remaining hits/players
 					ret = self._assign_hits(players, hits) # Recurse to assign the remaining
 					if ret:	# If we were able to assign the remaining hits
 						assigned.update(ret)	# Update the assigned dict
@@ -185,7 +185,7 @@ class EndGameAction(Action):
 			for hit in game.hits:
 				session.delete(hit)
 			for player in game.players:
-				player.status = USTATUS.FREE
+				player.status = USTAT.FREE
 				session.add(player)
 				self._put(SendMessageEvent('msg_send', dict(user=player.slack.slack_id, text='This game of ft_hitman is over!\n %s has emerged victorious!'%event.winner)))
 			session.delete(game)

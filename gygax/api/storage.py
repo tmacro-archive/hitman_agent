@@ -115,7 +115,7 @@ def set_status(slack, status):
 
 def validate_slack(slack, uid = None):
 	with get_user(slack = slack) as user:
-		if user:
+		if user and not user.slack.confirmed:
 			user.slack.confirmed = True
 			user.uid = uid
 			return True
