@@ -1,0 +1,97 @@
+meta:
+  app: gygax
+
+crypto:
+  slack: <DEV_KEY_CHANGE_ME>
+
+http:
+  host: ''
+  port: 80
+  
+token:
+  ttl: 10m
+  timestamp:
+    format: '%Y-%m-%d-%H:%M:%S'
+
+game:
+  lockout: 10s
+  size: 5
+  check_interval: 30s
+
+storage:
+  # uri: postgresql://scott:tiger@localhost/mydatabase
+  driver: postgresql://
+  path: postgres/agent
+  user: postgres
+  password: <REPLACE_ME>
+
+api:
+  auth:
+    validate: http://auth/slack/authorize
+  firehose: tcp://firehose:4930
+  slack:
+    base: https://slack.com/api
+    dm_list: /im.list
+    dm_new: /im.open
+    post_msg: /chat.postMessage
+    user_list: /users.list
+    user_info: /users.info
+
+resp:
+  validation: |
+              To get you registered, we first need to link your slack and intra.
+              Visit this link to signin.
+              {url}
+  registration_success: |
+                        {uid}, you have sucessfully linked your slack and intra
+                        
+  register_error: |
+                  We seem to be having some problems on our end getting you registered.
+                  Please try again later.
+  already_registered: |
+                    You are already registered.
+                    Why would you want to go through that again?
+  info_set_usage: |
+                  !set [weapon|location] your info here
+                  !set is used to update your weapon and location for ft_hitman
+                  The value is considered any text until the end of the line
+                  ex. !set weapon yellow rubber duck
+                      !set location tables outside cantina
+  info_set_confirm: I'm updating your {key} to {value}
+  public_bang: | 
+                You can't use a `!bang` command in a public channel.
+                Those are between you and me!
+  collect_info: |
+                To complete your inscription you must select your weapon and location of choice.
+                You can do this using the `!set` command.
+                eg. `!set weapon banana`
+                    `!set location cantina`
+                Values can contain multiple words
+                eg. `!set location zone 2`
+  new_user: |
+            You've completed your profile and have been successfully inscripted into ft_hitman.
+  game_starting: |
+                A new game of ft_hitman is about to begin!
+                All players will be locked in {lockout}.
+                Be sure to update your information before its too late!
+  user_locked: |
+                Your player has been locked for this game of ft_hitman!
+  help: |
+        Hi, I'm the bot for ft_hitman.
+        I'm under active development and sometimes I can be quite unstable.
+        If you find me misbehaving please report it with `@imontoya report`,
+        which will add a "big" and "scary" message in my logs.
+        My source code can be found online at https://github.com/tmacro/hitman
+        I'm even licensed under the BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause'
+        This bot is owned and operated by <@U1J5TREAY|tmacro>
+  new_assignment: |
+                  You have a new assignment.
+                  Target:     {target}
+                  Weapon:     {weapon}
+                  Location:   {location}
+  kill_confirm: |
+                  Someone has reported that they have killed you.
+                  Weapon:     {weapon}
+                  Location:   {location}
+                  Please `!confirm` or `!deny` their claim.
+                  If you have not responded in 12 hours the hit will be auto-confirmed.
