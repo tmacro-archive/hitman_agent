@@ -6,8 +6,7 @@ before_install:
 - echo "$TRAVIS_COMMIT"
 script:
 - docker build -t "$DOCKER_USER/hitman_agent" .
-- docker tag "$DOCKER_USER/hitman_agent:latest" "$DOCKER_USER/hitman_agent:$(echo
-  $TRAVIS_COMMIT| cut -c-10)"
+- docker tag "$DOCKER_USER/hitman_agent:latest" "$DOCKER_USER/hitman_agent:$(echo $TRAVIS_COMMIT| cut -c-10)"
 - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
 - docker push "$DOCKER_USER/hitman_agent"
 # before_deploy:
