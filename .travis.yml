@@ -3,8 +3,6 @@ language: python
 services:
 - docker
 before_install:
-- openssl aes-256-cbc -K $encrypted_7e1d88ef6dce_key -iv $encrypted_7e1d88ef6dce_iv
-  -in deploy_key.enc -out ./deploy_key -d
 - echo "$TRAVIS_COMMIT"
 script:
 - docker build -t "$DOCKER_USER/hitman_agent" .
@@ -13,7 +11,7 @@ script:
 - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
 - docker push "$DOCKER_USER/hitman_agent"
 before_deploy:
-- openssl aes-256-cbc -K $encrypted_9ad22a92b11d_key -iv $encrypted_9ad22a92b11d_iv
+- openssl aes-256-cbc -K $encrypted_7e1d88ef6dce_key -iv $encrypted_7e1d88ef6dce_iv
   -in deploy_key.enc -out /tmp/deploy_key -d
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/deploy_key
