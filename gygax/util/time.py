@@ -38,11 +38,13 @@ def convert_walltime(wall_time):
 	hour, minute = map(int, wall_time.split(':'))
 	return time(hour=hour, minute=minute)
 
-def to_datetime(time, offset = 0):
+def to_datetime(wall_time):
+	t = convert_walltime(wall_time)
 	d = date.today()
-	d = d.replace(day = d.day + offset)
+	if t.hour < d.hour or (t.hour == d.hour and t.minute <= d.minute):
+		d = d.replace(day = d.day + 1)
 	return datetime.combine(d, time)
-
+		
 def time_until(wall_time):
 	now = datetime.now()
 	then = to_datetime(wall_time)
@@ -52,4 +54,16 @@ def time_until(wall_time):
 	delta = then - now
 	return delta.total_seconds()
 
+def is_walltime(wall_time):
+	return len(wall_time.split(':')) == 2
 
+def is_delta(delta):
+	try:
+		convert_delta(delta)
+	except:
+		return False
+	else:
+		return True
+
+def secs_until(time):
+	return (time - datetime.now()).total_seconds()

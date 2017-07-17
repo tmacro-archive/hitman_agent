@@ -5,7 +5,7 @@ from gygax.util.config import config
 from gygax.util.log import getLogger
 import time
 from gygax.app import db, Base
-from gygax.models import User, Weapon, Location, Slack, Hit, game_players
+from gygax.models import User, Weapon, Location, Slack, Hit, game_players, Schedule
 from sqlalchemy_utils import database_exists, create_database
 
 

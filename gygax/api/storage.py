@@ -1,11 +1,13 @@
 from contextlib import contextmanager
-from ..models import User, Weapon, Location, Slack, Game, Hit
+from ..models import User, Weapon, Location, Slack, Game, Hit, Schedule
 from ..app import Session
 from ..util.log import getLogger
 from ..util.conv import make_list
 from ..bot.const import USER_STATUS as USTAT
 from ..bot.const import HIT_STATUS as HSTAT
 from ..util.config import config
+from sqlalchemy.exc import IntegrityError
+
 _log = getLogger(__name__)
 
 @contextmanager
@@ -166,9 +168,25 @@ def create_hit(hitman, target, weapon, location):
 		h = Hit(hitman, target, weapon, location)
 		session.add(h)
 
+def load_schedule():
+	with session_scope() as session:
+		for e in session.query(Schedule).all():
+			yield e.event, e.delay, e.uuid, e.repeat, e.time	
 
+def add_to_schedule(event, delay, key, repeat, time):
+	try:
+		with session_scope() as session:
+			s = Schedule(event, delay, key, repeat, time)
+			session.add(s)
+	except IntegrityError:
+		with session_scope() as session:
+			s = session.query(Schedule).filter_by(uuid = key).first()
+			s.event = event
+			s.delay = delay
+			s.repeat = repeat
+			s.time = time
+			session.add(s)
 
-
-
-
-
+def remove_from_schedule(key):
+	with session_scope() as session:
+		session.query(Schedule).filter_by(uuid = key).delete()

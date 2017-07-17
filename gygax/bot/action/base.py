@@ -59,9 +59,6 @@ class Action:
 	def _put(self, event):
 		return self._proxy.put(event)
 
-	def _delay(self, *args, **kwargs):
-		return self._proxy.delay(*args, **kwargs)
-
 	def _cancel(self, key):
 		return self._proxy.cancel(key)
 

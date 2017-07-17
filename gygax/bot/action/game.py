@@ -18,7 +18,7 @@ class MonitorFreeAction(Action):
 	def _install(self, proxy):
 		proxy.register(ETYPES.USER, 'user_registered', self)
 		proxy.register(ETYPES.CRON, 'cron_check_free', self)
-		proxy.delay(CheckFreeEvent('cron_check_free'), config.game.check_interval, repeat = True)
+		proxy.schedule(CheckFreeEvent('cron_check_free'), config.game.check_interval, 'cron_check_free', repeat = True)
 
 	def _process(self, event):
 		users = get_free_users()
@@ -34,7 +34,7 @@ class SetupGameAction(Action):
 		uuid, slacks = create_game()
 		if slacks:
 			self._log.debug('Created game with %s'%slacks)
-			self._delay(LockUsersEvent('cron_lock', dict(users = slacks, game=uuid)), config.game.lockout, uuid)
+			self._schedule(LockUsersEvent('cron_lock', dict(users = slacks, game=uuid)), config.game.lockout, uuid)
 			for u in slacks:
 				set_status(u, USTAT.WAITING)
 				self._put(SendMessageEvent('msg_send', dict(user=u, template=config.resp.game_starting,
@@ -82,7 +82,7 @@ class StartGameAction(Action):
 			set_status(user, USTAT.INGAME)
 			self._put(AssignmentNotifyEvent('msg_assignment', dict(user=user, game=event.game)))
 		# self._schedule(AssignNextRoundEvent('game_assign_next', dict(game=event.game)), '6:44', key = event.game + '_assign_next', repeat = True)
-		self._delay(AssignNextRoundEvent('game_assign_next', dict(game=event.game)), '1m', key = event.game + '_assign_next', repeat = True)
+		self._schedule(AssignNextRoundEvent('game_assign_next', dict(game=event.game)), '1m', key = event.game + '_assign_next', repeat = True)
 
 class ConfirmKillAction(Action):
 	def _install(self, proxy):

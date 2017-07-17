@@ -72,3 +72,13 @@ HIT_STATUS = const_type('HIT_STATUS', HIT_STATUS)
 
 def hit_status_repr(status):
 	return HIT_STATUS._fields[status]
+
+TIMER_TYPE = [
+	'DELAY',
+	'SCHED'
+]
+
+TIMER_TYPE = const_type('TIMER_TYPE', TIMER_TYPE)
+
+def timer_type_repr(ttype):
+	return TIMER_TYPE._fields[ttype]

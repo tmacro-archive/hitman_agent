@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, Text, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, Text, Boolean, DateTime, LargeBinary
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
@@ -8,6 +8,7 @@ from .api.slack import Slack as SlackApi
 from .util.crypto import rand_key
 from .bot.const import HIT_STATUS as HSTAT
 from .bot.const import USER_STATUS as USTAT
+import pickle
 
 Base = declarative_base()
 
@@ -150,3 +151,27 @@ class Game(Base, Query):
 	@property
 	def remaining_players(self):
 		return [p for p in self.players if p.status != USTAT.DEAD]
+
+class Schedule(Base):
+	__tablename__ = 'schedule'
+	id = Column(Integer, primary_key = True)
+	data = Column(LargeBinary())
+	delay = Column(String(32))
+	uuid = Column(String(128), unique = True)
+	repeat = Column(Boolean, default = False)
+	time = Column(DateTime())
+	
+	def __init__(self, event, delay, uuid, repeat, time):
+		self.event = event
+		self.delay = delay
+		self.uuid = uuid
+		self.repeat = repeat
+		self.time = time
+
+	@property
+	def event(self):
+		return pickle.loads(self.data) if self.data else None
+
+	@event.setter
+	def event(self, event):
+		self.data = pickle.dumps(event)

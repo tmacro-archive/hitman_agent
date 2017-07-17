@@ -17,11 +17,15 @@ def reqOk(resp):
 	return False
 
 class Slack:
-	def __init__(self, events):
-		self._events = events
+	def __init__(self):
+		self._events = None
 		self._user_map = {}
 		self._subscriber = Subscriber(config.api.firehose)
 
+		
+	def register_output_handler(self, events):
+		self._events = events
+		
 	def start(self):
 		self._subscriber.open()
 		self._setup_handlers()
@@ -30,14 +34,14 @@ class Slack:
 		self._subscriber._close()
 
 	def _message_handler(self, msg):
-		ev = MessageEvent(None, dict(user=msg['user'],text=msg['text'], channel=msg['channel']))
+		ev = MessageEvent(None, dict(user=msg['user'],text=msg['text'], channel=msg['channel'], public=msg['public']))
 		_log.debug('Received message from %s'%ev.user)
-		return self._events(ev)
+		return self._events(ev) if self._events else None
 	
 	def _command_handler(self, msg):
-		ev = CommandEvent('cmd_raw', dict(user = msg['user'], text=msg['text'], channel=msg['channel']))
+		ev = CommandEvent('cmd_raw', dict(user = msg['user'], text=msg['text'], channel=msg['channel'], public=msg['public']))
 		_log.debug('Received command %s'%ev.cmd)
-		return self._events(ev)
+		return self._events(ev) if self._events else None
 
 	def _setup_handlers(self):
 		self._subscriber.addHandler('msg', self._message_handler, strict = False)

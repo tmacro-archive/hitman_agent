@@ -3,7 +3,6 @@ from .base import Action
 from ..const import CMD_TYPES as CTPYES
 from ..const import EVENT_TYPES as ETYPES
 from ..const import HIT_STATUS as HSTATUS
-from ...app import slack as SlackApi
 from ..events import SlackValidationEvent, CommandEvent, SendMessageEvent, UpdateUserEvent, SetupGameEvent, StructuredMessageEvent, KillConfirmedEvent, ConfirmKillEvent
 from ...api.storage import create_user, get_user, get_hit, session_scope
 from ...util.config import config
@@ -22,10 +21,9 @@ class CommandAction(Action):
 	def _process(self, event):
 		self._log.debug('Processing raw command')
 		print(event.data())
-		if event.cmd_type == 'bang':
-			if not SlackApi._is_dm(event.channel) and event.valid:
-				self._log.debug('bang command on public channel')
-				return
+		if event.cmd_type == 'bang' and event.public:
+			self._log.debug('bang command on public channel')
+			return
 		if event.cmd and event.valid:
 			ev = CommandEvent('cmd_%s'%event.cmd, event.data(), no_parse = True)
 			self._log.debug('CommandEvent validated setting topic to %s and pushing to queue'%ev.topic)

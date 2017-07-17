@@ -17,6 +17,10 @@ class MessageEvent(Event):
 	def channel(self):
 		return self._get('channel')
 
+	@property
+	def public(self):
+		return self._get('public')
+
 class CommandEvent(MessageEvent):
 	type = ETYPES.CMD
 	bang_cmd = r'^!(?P<cmd>[a-z]{3,10})(?:[ \t]+(?P<args>[\w ]+))?'
@@ -219,3 +223,5 @@ class EndGameEvent(Event):
 	@property
 	def winner(self):
 		return self._get('winner')
+
+

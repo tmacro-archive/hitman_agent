@@ -37,10 +37,9 @@ class Event:
 			
 
 class Proxy:
-	def __init__(self, disp, queue, delay, schedule, cancel):
+	def __init__(self, disp, queue, schedule, cancel):
 		self.__disp = disp
 		self.__queue = queue
-		self.__delay = delay
 		self.__schedule = schedule
 		self.__cancel = cancel
 
@@ -54,9 +53,6 @@ class Proxy:
 		else:
 			self.__queue(event)
 	
-	def delay(self, *args, **kwargs):
-		return self.__delay(*args, **kwargs)
-
 	def schedule(self, *args, **kwargs):
 		return self.__schedule(*args, **kwargs)
 

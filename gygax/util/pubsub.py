@@ -90,8 +90,6 @@ class Transport(threading.Thread):
 		except ValueError:
 			raise RPCError('Malformed message body')
 		self._log.debug('Received event %s on topic:%s'%(self._event_id, topic))
-		with open('test.txt', 'a') as f:
-			f.write('%s %s\n'%(self._event_id, time.time()))
 		self._event_id += 1
 		return Event(topic, msg)
 
