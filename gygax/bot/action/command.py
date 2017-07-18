@@ -56,17 +56,19 @@ class SetCommand(Action):
 
 	def _process(self, event):
 		self._log.debug('Received set info command from user %s'%event.user)
-		if not event.args:
-			ev = SendMessageEvent('msg_send', dict(user=event.user, text = config.resp.info_set_usage))
-			self._put(ev)
-			return
+		if not event.args or len(args) < 2:
+			# return SendMessageEvent('msg_send', dict(user=event.user, text = config.resp.info_set_usage))
+			return StructuredMessageEvent('msg_structured', dict(user = event.user,
+																title=config.resp.info_set_usage.title,
+																content=config.resp.info_set_usage.content,
+																field=config.resp.info_set_usage.fields
+																))
 		target = event.args[0]
 		if not target in ['weapon', 'location']:
 			return SendMessageEvent('msg_send', dict(user=event.user, text = config.resp.info_set_usage))
 		value = ' '.join(event.args[1:])
 		self._log.debug("Pushing update event for %s to %s for user %s"%(target, value, event.user))
-		ev = UpdateUserEvent('user_update', dict(user=event.user, key=target, value=value))
-		self._put(ev)
+		return UpdateUserEvent('user_update', dict(user=event.user, key=target, value=value))
 
 class ReportCommand(Action):
 	log = _log

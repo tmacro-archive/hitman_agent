@@ -54,10 +54,12 @@ resp:
   already_registered: |
                     You are already registered.
                     Why would you want to go through that again?
-  info_set_usage: |
-                  `!set` [weapon|location] your info here
-                  `!set` is used to update your weapon and location for ft_hitman
-                  The value is considered any text until the end of the line
+  info_set_usage: 
+    title: "!set"
+    content: |
+              `!set` [weapon|location] <your info here>
+              `!set` is used to update your weapon and location for ft_hitman
+              The value is considered any text until the end of the line
     fields: 
       - title: Example
       - value: |
