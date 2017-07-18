@@ -1,8 +1,12 @@
 from datetime import timedelta, datetime, date, time
+from pyzt import timezone
+from pyxt import utc as utc_tz
 from .config import config
 from .log import getLogger
 
 _log = getLogger('util.time')
+
+local_tz = timezone(config.timezone)
 
 def convert_delta(interval):
 	'''
@@ -40,20 +44,12 @@ def convert_walltime(wall_time):
 
 def to_datetime(wall_time):
 	t = convert_walltime(wall_time)
-	d = date.today()
+	d = datetime.now()
 	if t.hour < d.hour or (t.hour == d.hour and t.minute <= d.minute):
 		d = d.replace(day = d.day + 1)
-	return datetime.combine(d, time)
+	local = local_tz.localize(d)
+	return datetime.combine(d, t).astimezone(utc_tz)
 		
-def time_until(wall_time):
-	now = datetime.now()
-	then = to_datetime(wall_time)
-	if then.hour == now.hour and then.minute == now.minute:
-		then = to_datetime(wall_time, 1)
-	_log.debug('now: %s, then: %s'%(now, then))
-	delta = then - now
-	return delta.total_seconds()
-
 def is_walltime(wall_time):
 	return len(wall_time.split(':')) == 2
 
@@ -66,4 +62,4 @@ def is_delta(delta):
 		return True
 
 def secs_until(time):
-	return (time - datetime.now()).total_seconds()
+	return (time - datetime.utcnow()).total_seconds()

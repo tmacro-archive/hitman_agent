@@ -3,6 +3,8 @@ from ..util.config import config
 from ..util.log import getLogger
 from ..bot.events import MessageEvent, CommandEvent
 import requests
+import json
+
 _log = getLogger('api.slack')
 
 auth_token = config.crypto.slack
@@ -100,7 +102,7 @@ class Slack:
 
 	@staticmethod
 	def _send_message(channel, message = None, attach = []):
-		data = dict(channel = channel, attachments = attach)
+		data = dict(channel = channel, attachments = json.dumps(attach))
 		if message:
 			data['text'] = message
 		_log.debug(data)

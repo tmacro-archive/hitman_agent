@@ -81,8 +81,8 @@ class StartGameAction(Action):
 		for user in event.users:
 			set_status(user, USTAT.INGAME)
 			self._put(AssignmentNotifyEvent('msg_assignment', dict(user=user, game=event.game)))
-		# self._schedule(AssignNextRoundEvent('game_assign_next', dict(game=event.game)), '6:44', key = event.game + '_assign_next', repeat = True)
-		self._schedule(AssignNextRoundEvent('game_assign_next', dict(game=event.game)), '1m', key = event.game + '_assign_next', repeat = True)
+		self._schedule(AssignNextRoundEvent('game_assign_next', dict(game=event.game)), '23:42', key = event.game + '_assign_next', repeat = True)
+		# self._schedule(AssignNextRoundEvent('game_assign_next', dict(game=event.game)), '1m', key = event.game + '_assign_next', repeat = True)
 
 class ConfirmKillAction(Action):
 	def _install(self, proxy):
@@ -91,7 +91,7 @@ class ConfirmKillAction(Action):
 	def _process(self, event):
 		self._log.debug('Received ConfirmKillEvent for %s'%event.user)
 		key = '%s_%s_auto_confirm'%(event.user, event.game)
-		self._delay(KillConfirmedEvent('game_confirmed', dict(user=event.user, game=event.game)), '12h', key=key)
+		self._schedule(KillConfirmedEvent('game_confirmed', dict(user=event.user, game=event.game)), '12h', key=key)
 		return ConfirmKillMessageEvent('msg_confirmation', dict(user=event.user))
 
 class KillConfirmedAction(Action):

@@ -68,8 +68,8 @@ class ValidateSlackAction(Action):
 				ev = SendMessageEvent('msg_send', dict(user=event.user, text=config.resp.register_error))
 			elif url:
 				self._log.debug('Retrieved vaidation url for %s'%event.user)
-				# ev = StructuredMessageEvent('msg_structured', dict(user=event.user, text=config.resp.validation, title='Sign In Here', title_link=url))			
-				ev = SendMessageEvent('msg_send', dict(user=event.user, template=config.resp.validation, args=dict(url=url)))
+				ev = StructuredMessageEvent('msg_structured', dict(user=event.user, content=config.resp.validation, title='Sign in with Intra', title_link=url))			
+				# ev = SendMessageEvent('msg_send', dict(user=event.user, template=config.resp.validation, args=dict(url=url)))
 			elif uid:
 				self._log.debug('slack user %s is already authenticated'%event.user)
 				validate_slack(event.user, uid)
@@ -83,7 +83,11 @@ class CollectInfoAction(Action):
 	def _process(self, event):
 		if event.topic == 'user_info':
 			self._log.debug('Received info collection event for user %s'%event.user)
-			ev = SendMessageEvent('msg_send', dict(user=event.user, text = config.resp.collect_info))
+			# ev = SendMessageEvent('msg_send', dict(user=event.user, text = config.resp.collect_info))
+			ev = StructuredMessageEvent('msg_structured', dict(user = event.user, 
+																content = config.resp.collect_info.content,
+																fields = config.resp.collect_info.fields
+																))
 			self._put(ev)			
 		elif event.topic == 'user_updated':
 			if not profile_is_complete(event.user):

@@ -1,6 +1,10 @@
 meta:
   app: gygax
 
+# This is needed because most production systems run on UTC time
+# This allows us to reference local wall time in the code without manualy dealing with offsets
+timezone: US/Pacific
+
 crypto:
   slack: <DEV_KEY_CHANGE_ME>
 
@@ -40,10 +44,9 @@ api:
 resp:
   validation: |
               To get you registered, we first need to link your slack and intra.
-              Visit this link to signin.
-              {url}
+              Visit the above link to signin.
   registration_success: |
-                        {uid}, you have sucessfully linked your slack and intra
+                        Congratulations, *{uid}*, you have sucessfully linked your slack and intra
                         
   register_error: |
                   We seem to be having some problems on our end getting you registered.
@@ -61,13 +64,18 @@ resp:
   public_bang: | 
                 You can't use a `!bang` command in a public channel.
                 Those are between you and me!
-  collect_info: |
-                To complete your inscription you must select your weapon and location of choice.
-                You can do this using the `!set` command.
-                eg. `!set weapon banana`
-                    `!set location cantina`
-                Values can contain multiple words
-                eg. `!set location zone 2`
+  collect_info: 
+    pretext: |
+          To complete your inscription you must select your weapon and location of choice.
+          You can do this using the `!set` command.
+    fields:
+      - title: Location
+        value: "`!set location cantina`"
+      - title: Weapon
+        value: "`!set weapon banana`"
+      - value: |
+              Values can contain multiple words
+              `!set location zone 2`
   new_user: |
             You've completed your profile and have been successfully inscripted into ft_hitman.
   game_starting: |

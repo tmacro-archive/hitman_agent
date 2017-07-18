@@ -2,7 +2,7 @@ from ...util.log import getLogger
 from ...util.http import http
 from ..events import SlackValidationEvent
 from .base import Action
-# from ...app import agent
+from ...app import agent
 _log = getLogger('action.ext')
 
 class SlackAuthorizedAction(Action):
@@ -22,6 +22,6 @@ class SlackAuthorizedAction(Action):
 			)
 			if data['user'] and (not data['valid'] or data['uid']):
 				ev = SlackValidationEvent('user_validate', data)
-				self._put(ev)
+				agent.put(ev)
 				_log.debug('Received slack validation for user %s 42 uid %s'%(ev.user, ev.uid))
 		_log.warning('Malformed request from authentication server')

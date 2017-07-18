@@ -157,7 +157,7 @@ class Schedule(Base):
 	id = Column(Integer, primary_key = True)
 	data = Column(LargeBinary())
 	delay = Column(String(32))
-	uuid = Column(String(128), unique = True)
+	uuid = Column(String(160), unique = True)
 	repeat = Column(Boolean, default = False)
 	time = Column(DateTime())
 	

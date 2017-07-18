@@ -78,12 +78,15 @@ class ReportCommand(Action):
 		with session_scope() as session:
 			slack = session.query(Slack).filter_by(slack_id = event.user).first()
 			user = slack.user if slack else None
-			if user:
+			if user and user.assigned:
 				if user.assigned.status == HSTATUS.ACTIVE and (user.targeted.status == HSTATUS.ACTIVE or user.targeted.status == HSTATUS.OPEN):
 					hit = user.assigned
 					hit.status = HSTATUS.PENDING
 					session.add(hit)
-					return ConfirmKillEvent('game_confirm', dict(user=hit.target.slack.slack_id, game=hit.game.uuid))
+					return [
+							ConfirmKillEvent('game_confirm', dict(user=hit.target.slack.slack_id, game=hit.game.uuid)),
+							SendMessageEvent('msg_send', dict(user=event.user, text='Your report has been recieved and is awaiting confirmation from your target'))
+							]
 				elif not user.assigned.status == HSTATUS.ACTIVE and (user.targeted.status == HSTATUS.ACTIVE or user.targeted.status == HSTATUS.OPEN):
 					self._log.warning('Hit not set as OPEN')
 					return SendMessageEvent('msg_send', dict(user=event.user, text='This hit is already pending, please wait until your traget responds'))
@@ -91,6 +94,7 @@ class ReportCommand(Action):
 					self._log.warning('User reported while their status is PENDING')
 					return SendMessageEvent('msg_send', dict(user=event.user, text='Someone has reported that they have killed you\n You can not report a kill until that matter is settled.'))
 			else:
+				return SendMessageEvent('msg_send', dict(user=event.user, text="I don't know who you killed, but you're not assigned any hits right now..."))
 				self._log.error('Unable to find user %s'%event.user)
 
 class ConfirmCommand(Action):
@@ -106,10 +110,9 @@ class ConfirmCommand(Action):
 						SendMessageEvent('msg_send', dict(user=event.user, text='Your have confirmed your death.')),
 						KillConfirmedEvent('game_confirmed', dict(user=event.user, game=hit.game.uuid))
 						]
-			elif hit and not hit.status == HSTATUS.PENDING:
+			elif not hit or not hit.status == HSTATUS.PENDING:
 				return SendMessageEvent('msg_send', dict(user=event.user, text="I'm not sure what your trying to confirm here..."))
-			else:
-				return SendMessageEvent('msg_send', dict(user=event.user, text='You have denied that someone has killed you'))
+				# return SendMessageEvent('msg_send', dict(user=event.user, text='You have denied that someone has killed you'))
 		
 
 class HelpCommand(Action):

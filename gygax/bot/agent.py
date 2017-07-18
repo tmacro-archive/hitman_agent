@@ -4,7 +4,7 @@ from .dispatch import Dispatcher, Proxy
 from ..util.log import getLogger
 from ..util.config import config
 from ..util.crypto import rand_key
-from ..util.time import convert_delta, time_until, convert_walltime, is_delta, is_walltime, secs_until
+from ..util.time import convert_delta, is_delta, is_walltime, secs_until, to_datetime
 from ..api.storage import load_schedule, add_to_schedule, remove_from_schedule
 from .const import TIMER_TYPE as TTYPE
 from datetime import datetime
@@ -52,7 +52,7 @@ class Agent(Thread):
 			delay = to_datetime(time)
 			_log.debug('Scheduling cron event %s at %s - %s'%(event, time, delay))
 		elif is_delta(time):
-			delay = datetime.now() + convert_delta(time)
+			delay = datetime.utcnow() + convert_delta(time)
 			_log.debug('Scheduling delayed event %s every %s - %s'%(event, time, delay))
 		key = key if key else rand_key()
 		if persist:

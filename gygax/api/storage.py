@@ -154,7 +154,7 @@ def create_game(size = config.game.size):
 				session.add(user)
 			session.add(g)
 			return g.uuid, [p.slack.slack_id for p in users]
-	return None
+	return None, None
 
 def get_free_users():
 	with session_scope() as session:

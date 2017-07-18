@@ -120,6 +120,15 @@ class StructuredMessageEvent(MessageEvent):
 	@property
 	def color(self):
 		return self._get('color')
+
+	@property
+	def content(self):
+		return self._get('content')
+
+	@property
+	def fields(self):
+		return self._get('fields')
+
 	@property
 	def attachments(self):
 		msg = {}
@@ -135,7 +144,12 @@ class StructuredMessageEvent(MessageEvent):
 			msg['title_link'] = self.title_link
 		if self.color:
 			msg['color'] = self.color
+		if self.content:
+			msg['text'] = self.content
+		if self.fields:
+			msg['fields'] = self.fields
 		msg['fallback'] = self.title_link
+		msg['mrkdwn_in'] = [x for x in msg.keys() if not x == 'color']
 		return [msg]
 
 class UpdateUserEvent(MessageEvent):
