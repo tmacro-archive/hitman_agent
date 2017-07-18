@@ -85,8 +85,8 @@ class CollectInfoAction(Action):
 			self._log.debug('Received info collection event for user %s'%event.user)
 			# ev = SendMessageEvent('msg_send', dict(user=event.user, text = config.resp.collect_info))
 			ev = StructuredMessageEvent('msg_structured', dict(user = event.user, 
-																pretext = config.resp.collect_info.pretext,
-																fields = [config.resp.collect_info.fields]
+																title = config.resp.collect_info.pretext,
+																fields = config.resp.collect_info.fields
 																))
 			self._put(ev)			
 		elif event.topic == 'user_updated':

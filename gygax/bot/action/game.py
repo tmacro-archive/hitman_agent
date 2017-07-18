@@ -6,7 +6,7 @@ from ..const import CMD_TYPES as CTPYES
 from ..const import EVENT_TYPES as ETYPES
 from ..const import USER_STATUS as USTAT
 from ..const import HIT_STATUS as HSTAT
-from ..events import SendMessageEvent, UserRegisteredEvent, CollectInfoEvent, UserUpdatedEvent, StartGameEvent, SetupGameEvent, LockUsersEvent, AssignInitialHitsEvent, CheckFreeEvent, AssignmentNotifyEvent, AssignNextRoundEvent, KillConfirmedEvent, ConfirmKillMessageEvent, CheckForWinnerEvent, EndGameEvent
+from ..events import SendMessageEvent, UserRegisteredEvent, CollectInfoEvent, UserUpdatedEvent, StartGameEvent, SetupGameEvent, LockUsersEvent, AssignInitialHitsEvent, CheckFreeEvent, AssignmentNotifyEvent, AssignNextRoundEvent, KillConfirmedEvent, ConfirmKillMessageEvent, CheckForWinnerEvent, EndGameEvent, StructuredMessageEvent
 from ...api.storage import get_free_users, lock_user, create_hit, create_game, set_status, get_game, session_scope, get_hit
 from ...models import Game, Hit
 import random
@@ -39,6 +39,9 @@ class SetupGameAction(Action):
 				set_status(u, USTAT.WAITING)
 				self._put(SendMessageEvent('msg_send', dict(user=u, template=config.resp.game_starting,
 														args = dict(lockout=config.game.lockout))))
+				self._put(StructuredMessageEvent('msg_structured', dict(user=u, 
+												content=config.resp.game_starting.content,
+												title=config.resp.game_starting.title)))
 
 class LockUsersAction(Action):
 	def _install(self, proxy):
