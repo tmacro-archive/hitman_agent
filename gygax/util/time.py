@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime, date, time
-from pyzt import timezone
-from pyxt import utc as utc_tz
+from pytz import timezone
+from pytz import utc as utc_tz
 from .config import config
 from .log import getLogger
 
