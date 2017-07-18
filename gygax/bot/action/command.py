@@ -56,7 +56,7 @@ class SetCommand(Action):
 
 	def _process(self, event):
 		self._log.debug('Received set info command from user %s'%event.user)
-		if not event.args or len(args) < 2:
+		if not event.args or len(event.args) < 2:
 			# return SendMessageEvent('msg_send', dict(user=event.user, text = config.resp.info_set_usage))
 			return StructuredMessageEvent('msg_structured', dict(user = event.user,
 																title=config.resp.info_set_usage.title,
