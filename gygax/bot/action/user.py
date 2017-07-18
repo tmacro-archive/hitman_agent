@@ -84,10 +84,7 @@ class CollectInfoAction(Action):
 		if event.topic == 'user_info':
 			self._log.debug('Received info collection event for user %s'%event.user)
 			# ev = SendMessageEvent('msg_send', dict(user=event.user, text = config.resp.collect_info))
-			ev = StructuredMessageEvent('msg_structured', dict(user = event.user, 
-																content = config.resp.collect_info.content,
-																fields = config.resp.collect_info.fields
-																))
+			ev = StructuredMessageEvent('msg_structured', dict(user = event.user, **config.resp.collect_info))
 			self._put(ev)			
 		elif event.topic == 'user_updated':
 			if not profile_is_complete(event.user):
