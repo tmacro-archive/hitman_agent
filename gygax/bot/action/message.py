@@ -3,7 +3,7 @@ from ...util.log import getLogger
 from ...app import slack as SlackApi
 from .base import Action
 from ...api.storage import get_user
-from ..events import SendMessageEvent
+from ..events import SendMessageEvent, StructuredMessageEvent
 from ...util.config import config
 _log = getLogger('action.message')
 
@@ -54,9 +54,14 @@ class AssignmentNotifyAction(Action):
 		with get_user(slack=event.user) as user:
 			if user:
 				hit = user.assigned
-				return SendMessageEvent('msg_send', dict(user=event.user, template=config.resp.new_assignment,
-													 args=dict(target=hit.target.uid, weapon=hit.weapon.desc,
-													 			location=hit.location.desc)))
+				# return SendMessageEvent('msg_send', dict(user=event.user, template=config.resp.new_assignment,
+				# 									 args=dict(target=hit.target.uid, weapon=hit.weapon.desc,
+				# 									 			location=hit.location.desc)))
+				fields = (('Target',hit.target.uid), ('Weapon',hit.weapon.desc), ('Location', hit.location.desc))
+				fields = [dict(title=x[0], value=x[1]) for x in fields]
+				return StructuredMessageEvent('msg_structured', dict(user=event.user,
+																content=config.resp.new_assignment.content,
+																fields=fields))
 
 class KillConfirmMessageAction(Action):
 	def _install(self, proxy):

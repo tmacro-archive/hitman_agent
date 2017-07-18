@@ -20,7 +20,7 @@ token:
 game:
   lockout: 10s 
   size: 5
-  check_interval: 30s
+  check_interval: 1h
 
 storage:
   # uri: postgresql://scott:tiger@localhost/mydatabase
@@ -92,11 +92,8 @@ resp:
         My source code can be found online at https://github.com/tmacro/hitman
         I'm even licensed under the BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause'
         This bot is owned and operated by <@U1J5TREAY|tmacro>
-  new_assignment: |
-                  You have a new assignment.
-                  Target:     {target}
-                  Weapon:     {weapon}
-                  Location:   {location}
+  new_assignment:
+    content: You have a new assignment.
   kill_confirm: |
                   Someone has reported that they have killed you.
                   Weapon:     {weapon}
