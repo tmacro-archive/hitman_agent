@@ -37,10 +37,8 @@ class SetupGameAction(Action):
 			self._schedule(LockUsersEvent('cron_lock', dict(users = slacks, game=uuid)), config.game.lockout, uuid)
 			for u in slacks:
 				set_status(u, USTAT.WAITING)
-				self._put(SendMessageEvent('msg_send', dict(user=u, template=config.resp.game_starting,
-														args = dict(lockout=config.game.lockout))))
 				self._put(StructuredMessageEvent('msg_structured', dict(user=u, 
-												content=config.resp.game_starting.content,
+												content=config.resp.game_starting.content.format(lockout=config.game.lockout),
 												title=config.resp.game_starting.title)))
 
 class LockUsersAction(Action):

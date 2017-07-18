@@ -72,7 +72,7 @@ class KillConfirmMessageAction(Action):
 		with get_user(slack=event.user) as user:
 			if user:
 				hit = user.targeted
-				fields = [dict(title=x[0], value=x[1]) for x in [('Weapon', hit.weapone.desc),('Location', hit.location.desc)]]
+				fields = [dict(title=x[0], value=x[1]) for x in [('Weapon', hit.weapon.desc),('Location', hit.location.desc)]]
 				return StructuredMessageEvent('msg_structured', dict(user=event.user,
 												title=config.resp.kill_confirm.title,
 												content=config.resp.kill_confirm.content,
