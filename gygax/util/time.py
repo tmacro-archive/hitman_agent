@@ -62,4 +62,6 @@ def is_delta(delta):
 		return True
 
 def secs_until(time):
+	if not time.tzinfo:
+		time = utc_tz.localize(time)
 	return (time - datetime.utcnow().astimezone(utc_tz)).total_seconds()
