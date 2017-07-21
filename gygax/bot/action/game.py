@@ -22,7 +22,7 @@ class MonitorFreeAction(Action):
 
 	def _process(self, event):
 		users = get_free_users()
-		if len(users) >= config.game.size:
+		if len(users) >= config.game.size.min:
 			self._log.info('Enough free players available. Starting a new game.')
 			self._put(SetupGameEvent('game_setup'))
 
@@ -40,6 +40,8 @@ class SetupGameAction(Action):
 				self._put(StructuredMessageEvent('msg_structured', dict(user=u, 
 												content=config.resp.game_starting.content.format(lockout=config.game.lockout),
 												title=config.resp.game_starting.title)))
+		else:
+			self._log.warning('Cannot create a new game not enough free users, someone probably resigned')
 
 class LockUsersAction(Action):
 	def _install(self, proxy):
@@ -69,7 +71,9 @@ class AssignInitialHitsAction(Action):
 				for user, hit in assignments.items():
 					h = Hit(user, *hit, game)
 					session.add(h)
-				return StartGameEvent('game_start', dict(users = event.users, game = event.game))
+				self._schedule(StartGameEvent('game_start', dict(users = event.users, game = event.game)), 
+												config.game.game_start, key = event.game + '_game_start')
+				# return StartGameEvent('game_start', dict(users = event.users, game = event.game))
 			else:
 				self._log.error('Unable to load game %s'%event.game)
 
@@ -82,7 +86,7 @@ class StartGameAction(Action):
 		for user in event.users:
 			set_status(user, USTAT.INGAME)
 			self._put(AssignmentNotifyEvent('msg_assignment', dict(user=user, game=event.game)))
-		self._schedule(AssignNextRoundEvent('game_assign_next', dict(game=event.game)), '23:42', key = event.game + '_assign_next', repeat = True)
+		self._schedule(AssignNextRoundEvent('game_assign_next', dict(game=event.game)), config.game.assign_next, key = event.game + '_assign_next', repeat = True)
 		# self._schedule(AssignNextRoundEvent('game_assign_next', dict(game=event.game)), '1m', key = event.game + '_assign_next', repeat = True)
 
 class ConfirmKillAction(Action):

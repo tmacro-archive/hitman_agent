@@ -144,10 +144,12 @@ def check_profile_completion(slack):
 			return True
 	return False
 
-def create_game(size = config.game.size):
+def create_game(min_users = None, max_users = None):
+	min_users = min_users if min_users else config.game.size.min
+	max_users = max_users if max_users else config.game.size.max
 	with session_scope() as session:
-		users = session.query(User).filter_by(status = USTAT.FREE).order_by(User.last_game).limit(size).all()
-		if len(users) >= config.game.size:
+		users = session.query(User).filter_by(status = USTAT.FREE).order_by(User.last_game).limit(max_users).all()
+		if len(users) >= config.game.size.min:
 			g = Game()
 			for user in users:
 				g.players.append(user)
