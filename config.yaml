@@ -18,9 +18,13 @@ token:
     format: '%Y-%m-%d-%H:%M:%S'
 
 game:
-  lockout: 10s 
-  size: 5
+  lockout: 10s
+  size:
+    min: 10
+    max: 20
   check_interval: 1h
+  game_start: "23:42"
+  assign_next: "23:42"
 
 storage:
   # uri: postgresql://scott:tiger@localhost/mydatabase
@@ -54,10 +58,10 @@ resp:
   already_registered: |
                     You are already registered.
                     Why would you want to go through that again?
-  info_set_usage: 
-    title: "!set"
+  info_set_usage:
+    pretext: I didn't understand that...
+    title: "!set [weapon|location] <your info here>"
     content: |
-              `!set` [weapon|location] <your info here>
               `!set` is used to update your weapon and location for ft_hitman
               The value is considered any text until the end of the line
     fields: 
