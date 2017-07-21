@@ -8,6 +8,9 @@ _log = getLogger('util.time')
 
 local_tz = timezone(config.timezone)
 
+def local_datetime():
+	return utc_tz.localize(datetime.utcnow()).astimezone(local_tz)
+
 def convert_delta(interval):
 	'''
 		Converts a timespan represented as a space seperated string 
@@ -44,11 +47,11 @@ def convert_walltime(wall_time):
 
 def to_datetime(wall_time):
 	t = convert_walltime(wall_time)
-	d = datetime.now()
-	if t.hour < d.hour or (t.hour == d.hour and t.minute <= d.minute):
-		d = d.replace(day = d.day + 1)
-	local = local_tz.localize(d)
-	return datetime.combine(d, t).astimezone(utc_tz)
+	d = local_datetime()
+	if t.hour < d.hour or (t.hour == d.hour and t.minute <= d.minute): # If the scheduled time is already passed or is currently
+		d = d.replace(day = d.day + 1) # Add 1 day
+	local = local_tz.localize(datetime.combine(d, t)) # Combine time and date, relocalize
+	return local.astimezone(utc_tz) # Convert to utc
 		
 def is_walltime(wall_time):
 	return len(wall_time.split(':')) == 2
