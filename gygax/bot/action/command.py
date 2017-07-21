@@ -59,7 +59,7 @@ class SetCommand(Action):
 		if not event.args or len(event.args) < 2:
 			# return SendMessageEvent('msg_send', dict(user=event.user, text = config.resp.info_set_usage))
 			return StructuredMessageEvent('msg_structured', dict(user = event.user,
-																pretext = config.resp.info_set_usage.pretext
+																pretext = config.resp.info_set_usage.pretext,
 																title=config.resp.info_set_usage.title,
 																content=config.resp.info_set_usage.content,
 																field=config.resp.info_set_usage.fields
