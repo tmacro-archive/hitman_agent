@@ -18,9 +18,9 @@ token:
     format: '%Y-%m-%d-%H:%M:%S'
 
 game:
-  lockout: 10s
+  lockout: 43m
   size:
-    min: 10
+    min: 5
     max: 20
   check_interval: 1h
   game_start: "23:42"
