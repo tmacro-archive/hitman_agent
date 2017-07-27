@@ -18,7 +18,7 @@ token:
     format: '%Y-%m-%d-%H:%M:%S'
 
 game:
-  lockout: 43m
+  lockout: 42m
   size:
     min: 5
     max: 20
@@ -99,7 +99,7 @@ resp:
         I'm under active development and sometimes I can be quite unstable.
         If you find me misbehaving please report it with `@imontoya report`,
         which will add a "big scary" message in my logs.
-        My source code can be found online at https://github.com/tmacro/hitman
+        My source code can be found online at https://github.com/tmacro/hitman_agent
         I'm even licensed under the BSD-3-Clause https://opensource.org/licenses/BSD-3-Clause'
         This bot is owned and operated by <@U1J5TREAY|tmacro>
   new_assignment:
