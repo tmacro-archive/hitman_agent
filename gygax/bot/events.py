@@ -44,7 +44,7 @@ class CommandEvent(MessageEvent):
 		match = re.match(self.at_cmd, text)
 		if match:
 			return 'at', match['cmd'], self._parse_args(match['args'])
-		return cmd, args
+		return None, []
 
 	@property
 	def cmd(self):
