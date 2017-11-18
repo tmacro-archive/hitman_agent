@@ -27,7 +27,7 @@
 	* send info notice w/ command help
 	* recieve `!weapon set` or `!location set`
 	* update database
-	* echo updated information vie slack
+	* echo updated information via slack
 * start a new game
 	* monitor number of free players
 	* generate starting state
@@ -58,3 +58,28 @@
 * react to player commands
 	* monitor slack
 	* respond via slack
+
+
+### So what does the new game flow need to look like?
+
+* registration
+	* remove location, as no longer needed
+	* same except for the addition of peer confirmed weapons
+
+* starting a game
+	* there will be only one continuous game (+ one for piscine only?)
+	* new users enter field immediatly upon registration completion
+
+* assignments
+	* assignments will be issued at 11:42 PM Sun - Thur and last 48 hours.
+	* hitmen can report missing their target missing in the 12 hours following the closure of an assignment.
+	* reporting now includes a photo of hitman, target + weapon
+	* reports will be peer confirmed
+	* cool off for failed
+
+* scoring
+	* Per player Kill/death counter
+	* points for successful assignment
+	* global leaderboard
+
+	
